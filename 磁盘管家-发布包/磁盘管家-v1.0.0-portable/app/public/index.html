@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <title>磁盘管家 | 本地安全清理</title>
+    <link id="appFavicon" rel="icon" href="/app-icon.png?v=20260821.5" />
+    <link rel="stylesheet" href="/vendor/phosphor/style.css" />
+    <link rel="stylesheet" href="/styles.css?v=20260822.1" />
+  </head>
+  <body>
+    <!--
+      THESIS: Disk cleanup is a visible, reviewable maintenance plan instead of an opaque boost button.
+      OWN-WORLD: Windows operations console with compact ruled data, cool neutral surfaces, and one evergreen action color.
+      STORY: Choose a disk, inspect recoverable space and consequences, then authorize a short-lived cleanup plan.
+      FIRST VIEWPORT: A narrow navigation rail frames a multi-disk header, grouped cleanup inventory, and pinned impact ledger.
+      FORM: Operate-mode disk cross-section console, candidate 3; seed 42eb31e8.
+      FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md.
+    -->
+    <main class="app-frame" id="appFrame">
+      <aside class="nav-rail" aria-label="应用导航">
+        <a class="brand" href="/" aria-label="磁盘管家首页">
+          <span class="brand-mark" aria-hidden="true"><img id="brandIcon" src="/app-icon.png?v=20260821.5" alt="" /></span>
+          <span><strong>磁盘管家</strong><small>本地安全清理</small></span>
+        </a>
+        <nav class="primary-nav" aria-label="主要功能">
+          <a class="nav-item is-active" href="#cleanup" data-view="cleanup" aria-current="page" aria-label="空间清理"><i class="ph ph-broom" aria-hidden="true"></i><span>空间清理</span></a>
+          <a class="nav-item" href="#safety" data-view="safety" aria-label="安全规则"><i class="ph ph-shield-check" aria-hidden="true"></i><span>安全规则</span></a>
+        </nav>
+        <section class="nav-section" aria-labelledby="inspectionNavTitle">
+          <div class="nav-section-heading"><span id="inspectionNavTitle">磁盘体检</span><i class="ph ph-activity" aria-hidden="true"></i></div>
+          <nav class="utility-nav" aria-label="磁盘体检工具">
+            <a class="nav-item utility-nav-item" href="#dashboard" data-view="dashboard" aria-label="磁盘仪表盘"><i class="ph ph-gauge" aria-hidden="true"></i><span><strong>磁盘仪表盘</strong><small>查看是否爆满</small></span></a>
+            <a class="nav-item utility-nav-item" href="#quick-clean" data-view="quick-clean" aria-label="小白清理"><i class="ph ph-sparkle" aria-hidden="true"></i><span><strong>小白清理</strong><small>只看推荐项目</small></span></a>
+          </nav>
+        </section>
+        <details class="skin-center" id="skinCenter" open>
+          <summary aria-controls="skinOptions"><i class="ph ph-palette" aria-hidden="true"></i><div><strong>皮肤中心</strong><span>颜色与对比度</span></div><i class="ph ph-caret-down skin-caret" aria-hidden="true"></i></summary>
+          <div class="skin-options" id="skinOptions" role="listbox" aria-label="选择界面皮肤">
+            <button class="skin-option is-active" type="button" role="option" aria-selected="true" data-skin="green"><span class="skin-swatch skin-swatch-green" aria-hidden="true"></span><span>松针绿</span></button>
+            <button class="skin-option" type="button" role="option" aria-selected="false" data-skin="blue"><span class="skin-swatch skin-swatch-blue" aria-hidden="true"></span><span>蓝白清爽</span></button>
+            <button class="skin-option" type="button" role="option" aria-selected="false" data-skin="red"><span class="skin-swatch skin-swatch-red" aria-hidden="true"></span><span>朱砂红</span></button>
+            <button class="skin-option" type="button" role="option" aria-selected="false" data-skin="violet"><span class="skin-swatch skin-swatch-violet" aria-hidden="true"></span><span>暮紫灰</span></button>
+          </div>
+        </details>
+        <button class="theme-toggle" id="themeToggle" type="button" title="切换日间或夜间模式" aria-label="切换日间或夜间模式">
+          <i class="ph ph-sun" aria-hidden="true"></i><span>切换日间模式</span>
+        </button>
+        <details class="scope-note" open>
+          <summary aria-labelledby="safetyTitle"><i class="ph ph-lock-key" aria-hidden="true"></i><div><h2 id="safetyTitle">保护边界</h2><span>点击查看范围</span></div><i class="ph ph-caret-down scope-caret" aria-hidden="true"></i></summary>
+          <p>不碰文档、下载、注册表、还原点、休眠与页面文件。</p>
+        </details>
+        <div class="desktop-tools" aria-label="桌面启动工具">
+          <button class="shortcut-button" id="shortcutButton" type="button" title="创建桌面启动文件" aria-label="创建桌面启动文件">
+            <i class="ph ph-desktop" aria-hidden="true"></i><span>创建桌面启动文件</span>
+          </button>
+          <button class="download-button" id="downloadLauncher" type="button" title="下载桌面启动器" aria-label="下载桌面启动器">
+            <i class="ph ph-download-simple" aria-hidden="true"></i><span>下载桌面启动器</span>
+          </button>
+        </div>
+        <div class="local-state"><span></span><div><strong>仅在本机运行</strong><small>127.0.0.1</small></div></div>
+      </aside>
+
+      <section class="main-surface" id="cleanup">
+        <header class="topbar">
+          <div>
+            <h1>磁盘空间清理</h1>
+            <p>扫描是只读操作。每一项都说明清理后的影响。</p>
+          </div>
+          <div class="topbar-actions">
+            <label class="search-field" for="searchInput">
+              <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+              <input id="searchInput" type="search" placeholder="搜索清理项目" autocomplete="off" />
+            </label>
+            <button class="icon-button" id="scanButton" type="button" title="重新扫描" aria-label="重新扫描"><i class="ph ph-arrows-clockwise"></i></button>
+          </div>
+        </header>
+
+        <section class="drive-strip" aria-labelledby="driveTitle">
+          <div class="drive-strip-heading">
+            <h2 id="driveTitle">本地磁盘</h2>
+            <span id="scanNote" role="status">正在发现磁盘</span>
+          </div>
+          <div class="drive-tabs" id="driveTabs" role="tablist" aria-label="选择要分析的磁盘"></div>
+          <div class="selected-drive" id="selectedDrive">
+            <div class="drive-letter" id="driveLetter">C:</div>
+            <div class="drive-capacity">
+              <div><strong id="driveLabel">系统盘</strong><span id="driveFileSystem">NTFS</span></div>
+              <div class="capacity-line"><span id="capacityFill"></span></div>
+              <div class="capacity-copy"><span id="usedSpace">已使用 --</span><span id="freeSpace">可用 --</span></div>
+            </div>
+            <div class="reclaimable"><span>本次可审阅</span><strong id="totalReclaimable">--</strong></div>
+          </div>
+        </section>
+
+        <section class="system-status" aria-labelledby="systemStatusTitle">
+          <header class="system-status-heading">
+            <div><h2 id="systemStatusTitle">磁盘状态</h2><p>固定磁盘的空间与卷状态快照。这里不替代硬件性能测试。</p></div>
+            <span id="statusUpdated" role="status">读取中</span>
+          </header>
+          <div class="system-status-grid">
+            <section class="disk-status-panel" aria-labelledby="diskStatusTitle">
+              <div class="status-panel-head"><div><span class="status-kicker">空间与卷状态</span><h3 id="diskStatusTitle">各个固定磁盘</h3></div><i class="ph ph-hard-drives" aria-hidden="true"></i></div>
+              <div class="disk-health-list" id="diskHealthList" aria-live="polite"><div class="status-placeholder">正在读取磁盘状态…</div></div>
+            </section>
+          </div>
+          <section class="recommendations" aria-labelledby="recommendationsTitle">
+            <div class="recommendation-heading"><div><i class="ph ph-sparkle" aria-hidden="true"></i><h3 id="recommendationsTitle">磁盘建议</h3></div><span>按风险排序</span></div>
+            <div class="recommendation-list" id="recommendationList"><div class="status-placeholder">读取建议中…</div></div>
+          </section>
+        </section>
+
+        <section class="inventory" aria-labelledby="inventoryTitle">
+          <header class="inventory-header">
+            <div><h2 id="inventoryTitle">清理清单</h2><p id="inventorySummary">等待扫描结果。</p></div>
+            <div class="risk-filters" id="riskFilters" aria-label="按风险筛选">
+              <button class="filter is-active" type="button" data-filter="all">全部</button>
+              <button class="filter" type="button" data-filter="safe">推荐</button>
+              <button class="filter" type="button" data-filter="review">需注意</button>
+              <button class="filter" type="button" data-filter="destructive">永久删除</button>
+              <button class="filter" type="button" data-filter="analysis">只分析</button>
+            </div>
+          </header>
+          <div class="category-groups" id="cleanupList" aria-live="polite"></div>
+        </section>
+      </section>
+
+      <section class="safety-surface" id="safetyView" aria-labelledby="safetyPageTitle" hidden>
+        <header class="safety-topbar">
+          <div><h1 id="safetyPageTitle">安全规则</h1><p>这套工具只会清理已声明的缓存路径，任何超出边界的操作都不会执行。</p></div>
+          <span class="safety-status"><i class="ph ph-lock-key" aria-hidden="true"></i>策略始终启用</span>
+        </header>
+
+        <section class="safety-overview" aria-labelledby="safetyOverviewTitle">
+          <span class="safety-seal" aria-hidden="true"><i class="ph ph-shield-check"></i></span>
+          <div><h2 id="safetyOverviewTitle">先理解范围，再决定清理</h2><p>所有项目都经过白名单、占用检测、近期文件保护和一次性授权校验。</p></div>
+          <div class="safety-overview-actions">
+            <span class="safety-overview-state" id="safetyOverviewState"><i class="ph ph-check-circle" aria-hidden="true"></i>本机受控</span>
+            <button class="safety-check-button" id="safetyCheckButton" type="button"><i class="ph ph-activity" aria-hidden="true"></i><span>运行安全自检</span></button>
+          </div>
+        </section>
+
+        <section class="safety-audit" aria-labelledby="safetyAuditTitle">
+          <div class="safety-audit-heading"><div><span class="status-kicker">可验证的本机反馈</span><h2 id="safetyAuditTitle">安全自检结果</h2></div><span id="safetyAuditStatus" role="status">尚未运行</span></div>
+          <div class="safety-audit-grid" id="safetyAuditGrid">
+            <div class="safety-audit-empty"><i class="ph ph-shield-check" aria-hidden="true"></i><span>点击“运行安全自检”，检查本地服务、白名单和保护条件。</span></div>
+          </div>
+        </section>
+
+        <div class="safety-content">
+          <section class="safety-block" aria-labelledby="boundaryTitle">
+            <header><span class="safety-block-icon"><i class="ph ph-prohibit-inset"></i></span><div><h2 id="boundaryTitle">保护边界</h2><p>以下位置不会进入扫描或清理范围。</p></div><button class="rule-toggle is-on" type="button" data-rule-toggle="boundary" aria-pressed="true"><i class="ph ph-lock-key-open" aria-hidden="true"></i><span>保护开启</span></button></header>
+            <details class="safety-disclosure" open>
+              <summary><span><strong>个人内容与系统恢复资源</strong><small>展开查看完整排除范围</small></span><i class="ph ph-caret-down" aria-hidden="true"></i></summary>
+              <div class="safety-detail-grid">
+                <div><i class="ph ph-folder-user" aria-hidden="true"></i><span><strong>个人文件</strong><small>文档、下载、桌面、图片和视频</small></span></div>
+                <div><i class="ph ph-arrow-counter-clockwise" aria-hidden="true"></i><span><strong>恢复能力</strong><small>系统还原点与回收前的用户文件</small></span></div>
+                <div><i class="ph ph-sliders-horizontal" aria-hidden="true"></i><span><strong>系统配置</strong><small>注册表、页面文件与 Defender 策略</small></span></div>
+                <div><i class="ph ph-hard-drive" aria-hidden="true"></i><span><strong>安装内容</strong><small>应用目录、游戏存档和驱动程序</small></span></div>
+              </div>
+            </details>
+          </section>
+
+          <section class="safety-block" aria-labelledby="guardrailsTitle">
+            <header><span class="safety-block-icon"><i class="ph ph-fingerprint"></i></span><div><h2 id="guardrailsTitle">执行前的自动保护</h2><p>即使项目已被选择，以下条件也会继续生效。</p></div><button class="rule-toggle is-on" type="button" data-rule-toggle="guardrails" aria-pressed="true"><i class="ph ph-lock-key-open" aria-hidden="true"></i><span>保护开启</span></button></header>
+            <details class="safety-disclosure" open>
+              <summary><span><strong>文件、程序与授权三层检查</strong><small>展开查看每一层的保留条件</small></span><i class="ph ph-caret-down" aria-hidden="true"></i></summary>
+              <div class="safety-detail-grid">
+                <div><i class="ph ph-clock-countdown" aria-hidden="true"></i><span><strong>近期文件</strong><small>易变缓存按分类保留最近 24 小时内容</small></span></div>
+                <div><i class="ph ph-app-window" aria-hidden="true"></i><span><strong>运行中程序</strong><small>关联程序占用时，清理项目会被锁定</small></span></div>
+                <div><i class="ph ph-link-break" aria-hidden="true"></i><span><strong>路径联接</strong><small>不跟随符号链接或目录联接</small></span></div>
+                <div><i class="ph ph-ticket" aria-hidden="true"></i><span><strong>一次性授权</strong><small>扫描结果与确认权限会在 15 分钟后失效</small></span></div>
+              </div>
+            </details>
+          </section>
+
+          <section class="safety-block" aria-labelledby="limitsTitle">
+            <header><span class="safety-block-icon"><i class="ph ph-eye-slash"></i></span><div><h2 id="limitsTitle">主动限制的功能</h2><p>为了避免不可逆风险，这些常见“优化”方式不会被提供。</p></div><button class="rule-toggle is-on" type="button" data-rule-toggle="limits" aria-pressed="true"><i class="ph ph-lock-key-open" aria-hidden="true"></i><span>限制开启</span></button></header>
+            <details class="safety-disclosure">
+              <summary><span><strong>高风险系统改动始终关闭</strong><small>展开查看不提供的操作</small></span><i class="ph ph-caret-down" aria-hidden="true"></i></summary>
+              <div class="safety-detail-grid">
+                <div><i class="ph ph-power" aria-hidden="true"></i><span><strong>休眠与页面文件</strong><small>不会关闭休眠，也不会改写虚拟内存设置</small></span></div>
+                <div><i class="ph ph-shield-warning" aria-hidden="true"></i><span><strong>系统策略</strong><small>不会调整 Defender、更新或服务策略</small></span></div>
+                <div><i class="ph ph-file-search" aria-hidden="true"></i><span><strong>任意路径</strong><small>不会按扩展名遍历磁盘，也不接受自定义删除路径</small></span></div>
+                <div><i class="ph ph-clock" aria-hidden="true"></i><span><strong>后台自动删除</strong><small>不会创建定时任务或低空间自动清理</small></span></div>
+              </div>
+            </details>
+          </section>
+        </div>
+      </section>
+
+      <aside class="impact-panel" id="impactPanel" aria-labelledby="planTitle">
+        <div class="impact-heading">
+          <div><span class="panel-icon"><i class="ph ph-clipboard-text"></i></span><div><h2 id="planTitle">本次清理计划</h2><p id="planDrive">等待选择磁盘</p></div></div>
+          <span class="plan-state" id="planState">未就绪</span>
+        </div>
+
+        <dl class="plan-totals">
+          <div><dt>预计释放</dt><dd id="selectedSize">0 B</dd></div>
+          <div><dt>已选</dt><dd id="selectedCount">0 项</dd></div>
+        </dl>
+
+        <section class="risk-summary" aria-labelledby="riskTitle">
+          <h3 id="riskTitle">风险构成</h3>
+          <div id="riskSummary"></div>
+        </section>
+
+        <section class="impact-list" aria-labelledby="impactTitle">
+          <h3 id="impactTitle">清理后会发生什么</h3>
+          <ul id="planItems"></ul>
+        </section>
+
+        <section class="guard-list" aria-labelledby="guardTitle">
+          <h3 id="guardTitle">自动保护</h3>
+          <ul>
+            <li><i class="ph ph-clock-countdown"></i><span>保留部分分类最近 24 小时文件</span></li>
+            <li><i class="ph ph-link-break"></i><span>绝不跟随符号链接或目录联接</span></li>
+            <li><i class="ph ph-app-window"></i><span>关联程序运行时禁止清理</span></li>
+            <li><i class="ph ph-ticket"></i><span>清理授权在扫描后 15 分钟失效</span></li>
+          </ul>
+        </section>
+
+        <button class="primary-button" id="openConfirm" type="button" disabled><i class="ph ph-check-circle"></i><span>核对并确认</span></button>
+        <p class="panel-footnote">扫描结果是估算值。被占用和权限受限的文件会保留。</p>
+      </aside>
+    </main>
+
+    <div class="mobile-plan-bar" id="mobilePlanBar">
+      <div><span id="mobilePlanCount">0 项</span><strong id="mobilePlanSize">0 B</strong></div>
+      <button id="mobileConfirm" type="button" disabled><span>核对计划</span><i class="ph ph-arrow-right"></i></button>
+    </div>
+
+    <dialog class="confirm-dialog" id="confirmDialog" aria-labelledby="confirmTitle">
+      <form id="confirmForm" method="dialog">
+        <header><span class="dialog-symbol"><i class="ph ph-warning"></i></span><div><h2 id="confirmTitle">最后核对</h2><p>清理后的文件不会进入回收站。</p></div></header>
+        <div class="confirm-scope" id="confirmSummary"></div>
+        <div class="confirm-impacts" id="confirmImpacts"></div>
+        <label for="confirmationInput">输入“确认清理”以授权本次计划</label>
+        <input id="confirmationInput" name="confirmation" autocomplete="off" spellcheck="false" />
+        <p class="dialog-error" id="dialogError" role="alert"></p>
+        <footer>
+          <button class="secondary-button" id="cancelConfirm" type="button">返回修改</button>
+          <button class="danger-button" id="confirmClean" type="submit" disabled><i class="ph ph-trash"></i><span>执行清理</span></button>
+        </footer>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="/app.js?v=20260821.4"></script>
+  </body>
+</html>

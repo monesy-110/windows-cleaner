@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">磁盘管家图标</title>
+  <desc id="desc">带有安全盾牌和确认标记的磁盘扫描图标</desc>
+  <defs>
+    <linearGradient id="bg" x1="36" y1="24" x2="474" y2="488" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d9f4e4"/>
+      <stop offset="0.52" stop-color="#4caf83"/>
+      <stop offset="1" stop-color="#126346"/>
+    </linearGradient>
+    <linearGradient id="disk" x1="118" y1="116" x2="396" y2="404" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f7fff9"/>
+      <stop offset="1" stop-color="#b8e8cb"/>
+    </linearGradient>
+    <linearGradient id="shield" x1="240" y1="158" x2="368" y2="354" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#173d30"/>
+      <stop offset="1" stop-color="#0b241b"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#08251a" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+  <rect x="26" y="26" width="460" height="460" rx="112" fill="url(#bg)"/>
+  <rect x="27.5" y="27.5" width="457" height="457" rx="110.5" fill="none" stroke="#effff5" stroke-opacity="0.52" stroke-width="3"/>
+  <g filter="url(#shadow)">
+    <circle cx="222" cy="258" r="128" fill="url(#disk)" stroke="#effff5" stroke-width="12"/>
+    <circle cx="222" cy="258" r="76" fill="none" stroke="#4a9f78" stroke-opacity="0.45" stroke-width="12"/>
+    <circle cx="222" cy="258" r="24" fill="#1a704e"/>
+    <path d="M222 174v38M222 304v38M138 258h38M268 258h38" stroke="#3b936c" stroke-linecap="round" stroke-width="12" opacity="0.58"/>
+    <path d="M321 137 395 163v77c0 57-30 103-74 126-44-23-74-69-74-126v-77l74-26Z" fill="url(#shield)" stroke="#ecfff3" stroke-width="10" stroke-linejoin="round"/>
+    <path d="m286 242 24 25 49-55" fill="none" stroke="#91e4b5" stroke-linecap="round" stroke-linejoin="round" stroke-width="17"/>
+  </g>
+</svg>
